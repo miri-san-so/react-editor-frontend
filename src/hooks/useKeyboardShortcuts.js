@@ -1,5 +1,5 @@
 import { useEffect, useCallback } from "react";
-import { SELECT_NODE, DESELECT, DELETE_NODE, UNDO, REDO, TOGGLE_PANELS } from "../context/editorActions";
+import { SELECT_NODE, DESELECT, DELETE_NODE, UNDO, REDO, TOGGLE_PANELS, TOGGLE_XRAY } from "../context/editorActions";
 import logger from "../utils/logger";
 
 /**
@@ -99,6 +99,12 @@ function useKeyboardShortcuts({ state, dispatch }) {
           }
 
           dispatch({ type: SELECT_NODE, id: ids[nextIndex] });
+          return;
+        }
+
+        if (event?.shiftKey && event?.key?.toLowerCase() === "x" && !isInputFocused) {
+          event.preventDefault();
+          dispatch({ type: TOGGLE_XRAY });
           return;
         }
 

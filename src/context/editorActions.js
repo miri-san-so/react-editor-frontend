@@ -11,3 +11,4 @@ export const SET_COMPONENT_TREE = "SET_COMPONENT_TREE";
 export const SET_CANVAS_BG = "SET_CANVAS_BG";
 export const ADD_NODE = "ADD_NODE";
 export const UPDATE_CSV_CELL = "UPDATE_CSV_CELL";
+export const TOGGLE_XRAY = "TOGGLE_XRAY";

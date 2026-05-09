@@ -151,6 +151,9 @@ function Icon({ name, size = 20, className = "", onClick, title }) {
       return null;
     }
 
+    /** Replace hardcoded stroke="white" on inner elements so they inherit currentColor from CSS */
+    innerContent = innerContent.replace(/stroke="white"/g, 'stroke="currentColor"');
+
     return (
       <svg
         xmlns="http://www.w3.org/2000/svg"

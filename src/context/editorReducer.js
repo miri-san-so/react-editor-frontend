@@ -12,6 +12,7 @@ import {
   SET_CANVAS_BG,
   ADD_NODE,
   UPDATE_CSV_CELL,
+  TOGGLE_XRAY,
 } from "./editorActions";
 import { MAX_HISTORY_LENGTH } from "../constants/editor";
 import logger from "../utils/logger";
@@ -388,6 +389,13 @@ function editorReducer(state, action) {
             action?.colIndex,
             action?.value
           ),
+        };
+      }
+
+      case TOGGLE_XRAY: {
+        return {
+          ...state,
+          xrayMode: !state.xrayMode,
         };
       }
 

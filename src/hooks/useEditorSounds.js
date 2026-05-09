@@ -14,6 +14,7 @@ var SOUND_ACTIONS = {
   UNDO: true,
   REDO: true,
   TOGGLE_PANELS: true,
+  TOGGLE_XRAY: true,
 };
 
 /**

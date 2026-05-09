@@ -10,9 +10,12 @@ import logger from "../../utils/logger";
  * @param {Object} props.node - The component tree node to render
  * @param {string|null} [props.selectedNodeId] - Currently selected node ID
  * @param {Function} [props.onContentChange] - Called with (nodeId, content) on text edit
+ * @param {number} [props.depth=0] - Nesting depth for x-ray mode Z-offset
+ * @param {boolean} [props.xrayMode=false] - Whether x-ray mode is active
+ * @param {number} [props.xrayZStep=0] - Pixels per depth level for Z-offset
  * @returns {React.ReactElement|null}
  */
-function CanvasRenderer({ node, selectedNodeId, onContentChange }) {
+function CanvasRenderer({ node, selectedNodeId, onContentChange, depth = 0, xrayMode = false, xrayZStep = 0 }) {
   const editRef = useRef(null);
   const isSelected = node?.id === selectedNodeId;
 
@@ -66,6 +69,7 @@ function CanvasRenderer({ node, selectedNodeId, onContentChange }) {
     }
 
     const Tag = node?.tag || "div";
+    var xrayTransform = xrayMode && depth > 0 ? "translateZ(" + Math.round(depth * xrayZStep) + "px)" : undefined;
 
     // CSV table nodes
     if (node?.type === "csv-table") {
@@ -79,7 +83,7 @@ function CanvasRenderer({ node, selectedNodeId, onContentChange }) {
           data-node-id={node?.id}
           data-node-type={node?.type}
           className={node?.className || undefined}
-          style={{ ...(node?.styles || {}), pointerEvents: "auto" }}
+          style={{ ...(node?.styles || {}), pointerEvents: "auto", transform: xrayTransform }}
           dangerouslySetInnerHTML={{ __html: sanitizeHtml(node?.rawHtml) }}
         />
       );
@@ -98,6 +102,7 @@ function CanvasRenderer({ node, selectedNodeId, onContentChange }) {
             ...(node?.styles || {}),
             cursor: isEditable ? "text" : undefined,
             outline: "none",
+            transform: xrayTransform,
           }}
           contentEditable={isEditable || undefined}
           suppressContentEditableWarning={isEditable || undefined}
@@ -116,7 +121,7 @@ function CanvasRenderer({ node, selectedNodeId, onContentChange }) {
         data-node-id={isCanvasRoot ? undefined : node?.id}
         data-node-type={isCanvasRoot ? undefined : node?.type}
         className={node?.className || undefined}
-        style={{ ...(node?.styles || {}), pointerEvents: "auto" }}
+        style={{ ...(node?.styles || {}), pointerEvents: "auto", transform: isCanvasRoot ? undefined : xrayTransform }}
       >
         {node?.children?.map((child) => (
           <CanvasRenderer
@@ -124,6 +129,9 @@ function CanvasRenderer({ node, selectedNodeId, onContentChange }) {
             node={child}
             selectedNodeId={selectedNodeId}
             onContentChange={onContentChange}
+            depth={depth + 1}
+            xrayMode={xrayMode}
+            xrayZStep={xrayZStep}
           />
         ))}
       </Tag>

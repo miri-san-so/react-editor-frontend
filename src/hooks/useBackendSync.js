@@ -147,6 +147,25 @@ function useBackendSync({ state, dispatch }) {
   }, []);
 
   /**
+   * Deletes a component from the backend via DELETE.
+   * @param {string} componentId - The component ID to delete
+   */
+  const deleteComponentOnBackend = useCallback(async (componentId) => {
+    try {
+      if (!componentId) return;
+
+      await apiFetch(`/component/${encodeURIComponent(componentId)}`, {
+        method: "DELETE",
+      });
+
+      savedIdsRef.current.delete(componentId);
+      logger.info("useBackendSync", `Component '${componentId}' deleted`);
+    } catch (error) {
+      logger.warn("useBackendSync", `deleteComponent '${componentId}' failed`, error);
+    }
+  }, []);
+
+  /**
    * Watches for new children added to canvas-root (paste events)
    * and POSTs them to the backend. Also debounces PUT for updated children.
    */
@@ -160,6 +179,16 @@ function useBackendSync({ state, dispatch }) {
 
       // Skip the initial render
       if (prevChildren === null) return;
+
+      // Detect removed children (DELETE)
+      if (prevChildren) {
+        const currentIds = new Set(children.map((child) => child?.id));
+        for (const prevChild of prevChildren) {
+          if (prevChild?.id && savedIdsRef.current.has(prevChild.id) && !currentIds.has(prevChild.id)) {
+            deleteComponentOnBackend(prevChild.id);
+          }
+        }
+      }
 
       // Detect newly added children (POST)
       for (const child of children) {
@@ -193,7 +222,7 @@ function useBackendSync({ state, dispatch }) {
     } catch (error) {
       logger.warn("useBackendSync", "sync effect failed", error);
     }
-  }, [state?.componentTree?.children, saveComponent, updateComponentOnBackend]);
+  }, [state?.componentTree?.children, saveComponent, updateComponentOnBackend, deleteComponentOnBackend]);
 
   return { isLoading };
 }

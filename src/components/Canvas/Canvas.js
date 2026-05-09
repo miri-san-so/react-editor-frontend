@@ -1,4 +1,4 @@
-import React, { useRef, useCallback, useState, useEffect } from "react";
+import React, { useRef, useCallback, useState, useEffect, useMemo } from "react";
 import CanvasRenderer from "./CanvasRenderer";
 import SelectionOutline from "./SelectionOutline";
 import HoverOutline from "./HoverOutline";
@@ -10,6 +10,39 @@ import { SELECT_NODE, DESELECT, UPDATE_NODE_CONTENT } from "../../context/editor
 import { DEFAULT_CANVAS_BACKGROUND } from "../../constants/editor";
 import logger from "../../utils/logger";
 import "./Canvas.css";
+
+/**
+ * Maximum total Z-spread in pixels for x-ray depth layering.
+ * @type {number}
+ */
+var XRAY_MAX_SPREAD = 250;
+
+/**
+ * Computes the maximum nesting depth of a component tree.
+ * @param {Object} node - The root node
+ * @param {number} [current=0] - Current depth
+ * @returns {number} The maximum depth
+ */
+function getMaxDepth(node, current) {
+  try {
+    if (current === undefined) {
+      current = 0;
+    }
+    if (!node?.children?.length) {
+      return current;
+    }
+    var max = current;
+    for (var idx = 0; idx < node.children.length; idx++) {
+      var childDepth = getMaxDepth(node.children[idx], current + 1);
+      if (childDepth > max) {
+        max = childDepth;
+      }
+    }
+    return max;
+  } catch (error) {
+    return current || 0;
+  }
+}
 
 /**
  * Main canvas component that displays the rendered component
@@ -25,6 +58,21 @@ function Canvas() {
   const panRef = useRef({ active: false, startX: 0, startY: 0, scrollLeft: 0, scrollTop: 0 });
   const spaceHeldRef = useRef(false);
   const rafRef = useRef(null);
+
+  /**
+   * Computes the per-level Z step for x-ray depth layering.
+   * Total spread is capped at XRAY_MAX_SPREAD px regardless of tree depth.
+   */
+  const xrayZStep = useMemo(() => {
+    try {
+      if (!state?.xrayMode) return 0;
+      var maxDepth = getMaxDepth(state?.componentTree);
+      if (maxDepth <= 0) return 0;
+      return Math.min(XRAY_MAX_SPREAD / maxDepth, 60);
+    } catch (error) {
+      return 20;
+    }
+  }, [state?.xrayMode, state?.componentTree]);
 
   /**
    * Tracks Space key state for pan mode.
@@ -254,7 +302,7 @@ function Canvas() {
   try {
     return (
       <div
-        className={`canvas${isPanning ? " canvas--panning" : ""}`}
+        className={`canvas${isPanning ? " canvas--panning" : ""}${state?.xrayMode ? " canvas--xray" : ""}`}
         ref={canvasRef}
         onClick={handleCanvasClick}
         onMouseDown={handleMouseDown}
@@ -267,6 +315,8 @@ function Canvas() {
             node={state?.componentTree}
             selectedNodeId={state?.selectedNodeId}
             onContentChange={handleContentChange}
+            xrayMode={state?.xrayMode}
+            xrayZStep={xrayZStep}
           />
         </div>
         <HoverOutline

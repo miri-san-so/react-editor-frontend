@@ -36,3 +36,53 @@
   color: var(--accent-danger);
   font-size: 14px;
 }
+
+/* ── X-ray / Isometric wireframe mode ── */
+
+.canvas--xray {
+  perspective: 1800px;
+}
+
+.canvas--xray .canvas__content {
+  transform: rotateY(-35deg) rotateX(10deg) scale(0.85);
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.canvas--xray .canvas__content * {
+  transform-style: preserve-3d;
+}
+
+.canvas:not(.canvas--xray) .canvas__content {
+  transform: rotateY(0deg) rotateX(0deg) scale(1);
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.canvas--xray [data-node-id] {
+  background: transparent !important;
+  background-image: none !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+  outline: 1px solid rgba(255, 255, 255, 0.35) !important;
+  outline-offset: -1px;
+  color: rgba(255, 255, 255, 0.85) !important;
+  -webkit-text-stroke: 0.5px rgba(255, 255, 255, 0.7);
+  text-shadow: none !important;
+  transform-style: preserve-3d;
+  transition: outline-color 0.2s ease, background 0.3s ease, transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.canvas--xray [data-node-id]:hover {
+  outline-color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.canvas--xray [data-node-id] img,
+.canvas--xray [data-node-id] video,
+.canvas--xray [data-node-id] svg:not([role="img"]) {
+  opacity: 0.08 !important;
+}
+
+.canvas--xray [data-node-id] [data-node-type="text"] {
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: 0.8px rgba(255, 255, 255, 0.8);
+}

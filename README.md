@@ -44,6 +44,85 @@ npm start
 npm run build
 ```
 
+## Backend Architecture
+
+```
+                          React Editor (Browser)
+ +-----------------------------------------------------------------+
+ |                                                                 |
+ |   WebsiteEditor                                                 |
+ |   +-----------------------------------------------------------+ |
+ |   |                                                           | |
+ |   |  EditorProvider (Context)                                 | |
+ |   |  +-----------------------------------------------------+ | |
+ |   |  |  state.componentTree    dispatch(action)             | | |
+ |   |  +----------+------------------+-----------------------+ | |
+ |   |             |                  |                         | |
+ |   |     +-------v--------+  +-----v---------+               | |
+ |   |     |  Canvas         |  | Layers/Props  |               | |
+ |   |     |  + useCursors() |  | Panels        |               | |
+ |   |     +-------+--------+  +---------------+               | |
+ |   |             |                                            | |
+ |   |  +----------v-------------------------------------------+ |
+ |   |  |  useBackendSync()                                    | | |
+ |   |  |  Watches componentTree for added/updated/removed     | | |
+ |   |  |  children and syncs to REST API                      | | |
+ |   |  +----------+------------------------------------------+ | |
+ |   +-------------|---------------------------------------------+ |
+ |                 |                                               |
+ +-----------------|-----------------------------------------------+
+                   |
+     +-------------v--------------+       +------------------------+
+     |        REST API            |       |      WebSocket         |
+     |  /react-editor/api        |       |  /react-editor         |
+     +---------+------------------+       +-----------+------------+
+     |                            |       |                        |
+     |  GET    /canvas            |       |  IN:  { x, y }        |
+     |    Load all components     |       |    Local cursor pos    |
+     |    on mount                |       |    (throttled 50ms)    |
+     |                            |       |                        |
+     |  POST   /component         |       |  OUT: { type:"cursor", |
+     |    Save new component      |       |    id, color, name,   |
+     |    (on paste)              |       |    x, y }             |
+     |                            |       |    Remote cursor pos   |
+     |  PUT    /component/:id     |       |                        |
+     |    Update existing         |       |  OUT: { type:"remove", |
+     |    (debounced 1000ms)      |       |    id }               |
+     |                            |       |    User disconnected   |
+     |  DELETE /component/:id     |       |                        |
+     |    Remove component        |       |                        |
+     +----------------------------+       +------------------------+
+                   |                                  |
+                   +----------------+-----------------+
+                                    |
+                            +-------v--------+
+                            |   Backend      |
+                            |   Server       |
+                            +----------------+
+```
+
+### Data Flow
+
+**Persistence (REST)** -- `useBackendSync` hook runs inside `EditorLayout` and watches `state.componentTree` for changes:
+
+1. **On mount** -- `GET /canvas` fetches all saved components, dispatches `SET_COMPONENT_TREE` to populate the canvas
+2. **On paste** -- New child detected in tree, `POST /component` saves it, ID tracked in `savedIdsRef`
+3. **On edit** -- Changed child detected, debounced `PUT /component/:id` after 1000ms of inactivity
+4. **On delete** -- Removed child detected, `DELETE /component/:id` cleans up backend
+
+**Multiplayer Cursors (WebSocket)** -- `useCursors` hook runs inside `Canvas` and maintains a persistent connection:
+
+1. **Local cursor** -- `mousemove` on canvas sends `{ x, y }` (throttled to 50ms) over WebSocket
+2. **Remote cursors** -- Incoming `cursor` messages render colored SVG arrows with animal names
+3. **Cleanup** -- `remove` messages hide disconnected users; cursors fade after 3s of inactivity
+
+### Environment Variables
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `REACT_APP_API_URL` | `https://getsnapdrop.in/react-editor/api` | REST API base URL |
+| `REACT_APP_WS_URL` | `wss://getsnapdrop.in/react-editor` | WebSocket server URL |
+
 ## Project Structure
 
 ```
