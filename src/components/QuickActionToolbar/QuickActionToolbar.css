@@ -1,0 +1,45 @@
+.quick-action-toolbar {
+  position: fixed;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px;
+  background: var(--panel-surface-dark);
+  border-radius: 32px;
+  z-index: 1000;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.quick-action-toolbar__button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 8px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  transition: background-color 0.15s ease, opacity 0.15s ease;
+  color: var(--panel-text-white);
+  box-sizing: border-box;
+  opacity: 0.5;
+}
+
+.quick-action-toolbar__button:hover {
+  opacity: 0.7;
+}
+
+.quick-action-toolbar__button--active {
+  background: var(--quick-action-active);
+  opacity: 1;
+}
+
+.quick-action-toolbar__button--active:hover {
+  background: var(--quick-action-active);
+  opacity: 1;
+}

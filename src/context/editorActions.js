@@ -1,0 +1,13 @@
+export const SELECT_NODE = "SELECT_NODE";
+export const DESELECT = "DESELECT";
+export const UPDATE_NODE_STYLE = "UPDATE_NODE_STYLE";
+export const UPDATE_NODE_CONTENT = "UPDATE_NODE_CONTENT";
+export const DELETE_NODE = "DELETE_NODE";
+export const TOGGLE_PANELS = "TOGGLE_PANELS";
+export const SET_TOOL_MODE = "SET_TOOL_MODE";
+export const UNDO = "UNDO";
+export const REDO = "REDO";
+export const SET_COMPONENT_TREE = "SET_COMPONENT_TREE";
+export const SET_CANVAS_BG = "SET_CANVAS_BG";
+export const ADD_NODE = "ADD_NODE";
+export const UPDATE_CSV_CELL = "UPDATE_CSV_CELL";

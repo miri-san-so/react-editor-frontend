@@ -1,0 +1,283 @@
+/* =========================================================
+   Inline Toolbar — Figma-spec rewrite
+   Each group is a separate pill with its own bg + shadow.
+   The outer wrapper has no background — just flex + gap.
+   ========================================================= */
+
+/* ── Fade-up keyframes ──────────────────────────────────── */
+@keyframes toolbar-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── Outer wrapper ───────────────────────────────────────── */
+.inline-toolbar {
+  position: absolute;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+/* Staggered fade-up for each pill on enter */
+.inline-toolbar > * {
+  opacity: 0;
+  animation: toolbar-fade-up 0.25s ease-out forwards;
+}
+
+.inline-toolbar > *:nth-child(1) { animation-delay: 0ms; }
+.inline-toolbar > *:nth-child(2) { animation-delay: 30ms; }
+.inline-toolbar > *:nth-child(3) { animation-delay: 60ms; }
+.inline-toolbar > *:nth-child(4) { animation-delay: 90ms; }
+.inline-toolbar > *:nth-child(5) { animation-delay: 120ms; }
+.inline-toolbar > *:nth-child(6) { animation-delay: 150ms; }
+.inline-toolbar > *:nth-child(7) { animation-delay: 180ms; }
+.inline-toolbar > *:nth-child(8) { animation-delay: 210ms; }
+
+/* Quick fade-out on the whole toolbar at once */
+.inline-toolbar--exiting {
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.1s ease-in, transform 0.1s ease-in;
+  pointer-events: none;
+}
+
+.inline-toolbar--exiting > * {
+  animation: none;
+  opacity: 1;
+}
+
+/* ── Shared pill base ────────────────────────────────────── */
+.toolbar-pill {
+  display: flex;
+  align-items: center;
+  border-radius: 32px;
+  box-shadow: var(--toolbar-shadow);
+  flex-shrink: 0;
+}
+
+/* ── Alignment pill ──────────────────────────────────────── */
+.toolbar-pill--align {
+  background: var(--toolbar-blue);
+  padding: 8px;
+  cursor: pointer;
+  border: none;
+  color: var(--panel-text-white);
+  transition: background-color 0.15s ease;
+}
+
+.toolbar-pill--align:hover {
+  background: var(--toolbar-blue-dark);
+}
+
+/* ── Font-style pill (B / I / S group) ───────────────────── */
+.toolbar-pill--style {
+  background: var(--toolbar-blue);
+  padding: 2px;
+  gap: 2px;
+}
+
+.toolbar-pill--style .style-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  border-radius: 32px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: var(--panel-text-white);
+  transition: background-color 0.15s ease;
+}
+
+.toolbar-pill--style .style-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.toolbar-pill--style .style-btn--active {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.toolbar-pill--style .style-btn--active:hover {
+  background: rgba(255, 255, 255, 0.24);
+}
+
+/* ── Value pills (opacity, font-size, font-family) ────────── */
+.toolbar-pill--value {
+  background: var(--toolbar-blue-dark);
+  padding: 8px;
+  gap: 6px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  color: var(--panel-text-white);
+  transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.toolbar-pill--value:hover {
+  background: var(--toolbar-blue-darker);
+}
+
+/* Active / focused state (e.g. when dropdown is open) */
+.toolbar-pill--value--active {
+  background: var(--toolbar-blue-darker);
+  border-color: var(--toolbar-border);
+  box-shadow: var(--toolbar-focus-ring), var(--toolbar-inset-shadow);
+}
+
+/* Value label */
+.toolbar-pill__label {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: -0.28px;
+  color: var(--panel-text-white);
+  line-height: 1;
+  user-select: none;
+}
+
+/* Inline editable input inside value pills */
+.toolbar-pill__input {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: -0.28px;
+  color: var(--panel-text-white);
+  line-height: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+  text-align: center;
+}
+
+.toolbar-pill__input::selection {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Suffix label (px, %) shown after the input */
+.toolbar-pill__suffix {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: -0.28px;
+  color: rgba(255, 255, 255, 0.6);
+  line-height: 1;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* ── Copy pill ────────────────────────────────────────────── */
+.toolbar-pill--copy {
+  background: var(--toolbar-blue-darker);
+  padding: 8px;
+  cursor: pointer;
+  border: none;
+  color: var(--panel-text-white);
+  transition: background-color 0.15s ease;
+}
+
+.toolbar-pill--copy:hover {
+  background: var(--toolbar-blue-darkest);
+}
+
+/* ── Delete pill ──────────────────────────────────────────── */
+.toolbar-pill--delete {
+  background: var(--toolbar-red);
+  padding: 8px;
+  cursor: pointer;
+  border: none;
+  color: var(--panel-text-white);
+  transition: filter 0.15s ease;
+}
+
+.toolbar-pill--delete:hover {
+  filter: brightness(1.15);
+}
+
+/* ── Font-family dropdown menu ────────────────────────────── */
+.font-family-pill {
+  position: relative;
+}
+
+.font-family-pill__menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  min-width: 180px;
+  max-height: 240px;
+  overflow: hidden;
+  background: #0163d8;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.16);
+  z-index: 100;
+  padding: 4px 12px 4px 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.font-family-pill__menu-inner {
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.font-family-pill__menu-inner::-webkit-scrollbar {
+  display: none;
+}
+
+.font-family-pill__scrollbar {
+  position: absolute;
+  right: 3px;
+  top: 10px;
+  width: 4px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.24);
+  pointer-events: none;
+}
+
+.font-family-pill__option {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 32px;
+  background: #0062d9;
+  color: var(--panel-text-white);
+  font-size: 16px;
+  letter-spacing: -0.32px;
+  line-height: 1;
+  text-align: left;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: background-color 0.1s ease;
+}
+
+.font-family-pill__option:hover {
+  background: #0056bf;
+}
+
+.font-family-pill__option--selected {
+  background: var(--panel-text-offwhite);
+  color: #0163d8;
+  border-radius: 8px;
+}
+
+.font-family-pill__option--selected:hover {
+  background: #f0f4ff;
+}

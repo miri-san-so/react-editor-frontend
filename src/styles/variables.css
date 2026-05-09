@@ -1,0 +1,68 @@
+:root {
+  /* Editor chrome */
+  --editor-bg: #1e1e2e;
+  --editor-surface: #282840;
+  --editor-border: #3b3b5c;
+  --editor-text: #cdd6f4;
+  --editor-text-muted: #6c7086;
+
+  /* Blue toolbar palette (from Figma) */
+  --toolbar-blue: #0163d8;
+  --toolbar-blue-dark: #0062d9;
+  --toolbar-blue-darker: #0043ab;
+  --toolbar-blue-darkest: #0042ab;
+  --toolbar-blue-bg: #0056bf;
+  --toolbar-red: #bf1600;
+  --toolbar-border: rgba(255, 255, 255, 0.08);
+  --toolbar-border-light: rgba(255, 255, 255, 0.12);
+  --toolbar-shadow: 0px 4px 6px rgba(0, 0, 0, 0.16);
+  --toolbar-inset-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.25);
+  --toolbar-focus-ring: 0px 0px 0px 2px #91ddff;
+
+  /* Selection / interaction */
+  --select-outline: #3b82f6;
+  --select-hover: rgba(59, 130, 246, 0.15);
+  --select-bg: rgba(59, 130, 246, 0.08);
+
+  /* Accents */
+  --accent-primary: #3b82f6;
+  --accent-danger: #bf1600;
+  --accent-danger-light: #e55;
+  --accent-success: #22c55e;
+
+  /* Panel surfaces */
+  --panel-bg: #222;
+  --panel-surface: #2a2a2a;
+  --panel-surface-dark: #2C2C2C;
+  --panel-text-white: #fff;
+  --panel-text-offwhite: #feffff;
+
+  /* Quick action toolbar */
+  --quick-action-active: #3F8BE3;
+
+  /* Spacing scale (4px base) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 32px;
+  --space-8: 40px;
+
+  /* Font size scale */
+  --text-xs: 11px;
+  --text-sm: 12px;
+  --text-base: 13px;
+  --text-md: 14px;
+  --text-lg: 16px;
+
+  /* Sizing */
+  --toolbar-height: 36px;
+  --sidebar-width: 276px;
+  --properties-width: 276px;
+  --quick-action-size: 40px;
+
+  /* Typography */
+  --font-mono: "Geist Mono", monospace;
+}

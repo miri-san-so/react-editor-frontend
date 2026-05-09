@@ -1,0 +1,121 @@
+/* ------------------------------------------------------------------ */
+/* Dropdown shared base                                                  */
+/* ------------------------------------------------------------------ */
+
+.dropdown {
+  position: relative;
+}
+
+/**
+ * Highlighted option (keyboard navigation) — default variant.
+ */
+.dropdown__option--highlighted {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* ------------------------------------------------------------------ */
+/* Toolbar variant — blue Figma styling                                  */
+/* ------------------------------------------------------------------ */
+
+/**
+ * The open menu container for the toolbar variant.
+ * Matches Figma spec: blue background, subtle border, large border-radius,
+ * drop shadow, and clipped overflow so items don't bleed outside the pill.
+ */
+.dropdown--toolbar .dropdown__menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  min-width: 160px;
+  max-height: 200px;
+  /* hide the native scrollbar — the custom scrollbar div is used instead */
+  overflow: hidden;
+  background: #0163d8;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.16);
+  padding: 4px 12px 4px 4px;
+  z-index: 100;
+  box-sizing: border-box;
+}
+
+/**
+ * Inner scroll container that allows the option list to scroll while the
+ * outer menu keeps its clipped border-radius.
+ */
+.dropdown--toolbar .dropdown__menu-inner {
+  max-height: 192px;
+  overflow-y: auto;
+  /* hide browser scrollbar — the custom scrollbar div renders on top */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.dropdown--toolbar .dropdown__menu-inner::-webkit-scrollbar {
+  display: none;
+}
+
+/**
+ * Each option button in the toolbar dropdown.
+ * Regular state: blue background, white text, pill-shaped radius.
+ */
+.dropdown--toolbar .dropdown__option {
+  display: block;
+  width: 100%;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 32px;
+  background: #0062d9;
+  color: #ffffff;
+  font-size: 16px;
+  letter-spacing: -0.32px;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.1s ease;
+  box-sizing: border-box;
+  white-space: nowrap;
+}
+
+.dropdown--toolbar .dropdown__option:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+/**
+ * Selected option: white background, blue text, tighter radius (8px per spec).
+ */
+.dropdown--toolbar .dropdown__option--selected {
+  background: #feffff;
+  color: #0163d8;
+  border-radius: 8px;
+}
+
+.dropdown--toolbar .dropdown__option--selected:hover {
+  background: #feffff;
+}
+
+/**
+ * Highlighted option during keyboard navigation.
+ */
+.dropdown--toolbar .dropdown__option--highlighted {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.dropdown--toolbar .dropdown__option--selected.dropdown__option--highlighted {
+  background: #feffff;
+}
+
+/**
+ * Custom scrollbar rendered as an absolutely-positioned div inside the menu.
+ * Positioned 3 px from the right edge, 4 px wide, with a pill radius.
+ * Visibility and height are controlled via JS inline styles.
+ */
+.dropdown--toolbar .dropdown__scrollbar {
+  position: absolute;
+  right: 3px;
+  top: 4px;
+  bottom: 4px;
+  width: 4px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.24);
+  pointer-events: none;
+}

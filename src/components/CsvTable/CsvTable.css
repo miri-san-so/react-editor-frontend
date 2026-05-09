@@ -1,0 +1,165 @@
+.csv-table-wrapper {
+  position: relative;
+  border-radius: 8px;
+  background: var(--editor-bg);
+  border: 1px solid var(--editor-border);
+  overflow: hidden;
+  min-width: 320px;
+  max-width: 900px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  pointer-events: auto;
+}
+
+.csv-table-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: var(--editor-surface);
+  border-bottom: 1px solid var(--editor-border);
+  gap: 8px;
+}
+
+.csv-table-label {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--editor-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.csv-table-copy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border: none;
+  border-radius: 4px;
+  background: var(--toolbar-blue);
+  color: var(--panel-text-white);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s ease;
+}
+
+.csv-table-copy-btn:hover {
+  background: var(--toolbar-blue-dark);
+}
+
+.csv-table-copy-btn:active {
+  background: var(--toolbar-blue-darker);
+}
+
+.csv-table-copy-btn--copied {
+  background: var(--accent-success);
+}
+
+.csv-table-copy-btn--copied:hover {
+  background: var(--accent-success);
+}
+
+.csv-table-scroll {
+  overflow: auto;
+  max-height: 400px;
+}
+
+.csv-table-scroll::-webkit-scrollbar {
+  height: 6px;
+  width: 6px;
+}
+
+.csv-table-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.csv-table-scroll::-webkit-scrollbar-thumb {
+  background: var(--editor-border);
+  border-radius: 3px;
+}
+
+.csv-table-scroll::-webkit-scrollbar-thumb:hover {
+  background: var(--editor-text-muted);
+}
+
+.csv-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--editor-text);
+  table-layout: fixed;
+}
+
+.csv-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--editor-surface);
+  color: var(--editor-text);
+  font-weight: 600;
+  text-align: left;
+  padding: 8px 12px;
+  border-bottom: 2px solid var(--editor-border);
+  border-right: 1px solid var(--editor-border);
+  max-width: 320px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.csv-table thead th:last-child {
+  border-right: none;
+}
+
+.csv-table tbody td {
+  padding: 6px 12px;
+  border-bottom: 1px solid var(--editor-border);
+  border-right: 1px solid var(--editor-border);
+  max-width: 320px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.1s ease;
+}
+
+.csv-table tbody td:last-child {
+  border-right: none;
+}
+
+.csv-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.csv-table tbody tr:hover td {
+  background: var(--select-hover);
+}
+
+.csv-table-cell--editing {
+  padding: 0 !important;
+  background: var(--select-bg) !important;
+  overflow: visible !important;
+}
+
+.csv-cell-input {
+  width: 100%;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 0;
+  background: var(--editor-bg);
+  color: var(--editor-text);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  outline: 2px solid var(--accent-primary);
+  outline-offset: -2px;
+  box-sizing: border-box;
+}
+
+.csv-cell-input:focus {
+  outline-color: var(--select-outline);
+}
