@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { SET_COMPONENT_TREE } from "../context/editorActions";
 import { AUTO_SAVE_DEBOUNCE_MS } from "../constants/editor";
+import { compressNodeImages } from "../utils/imageCompressor";
 import logger from "../utils/logger";
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || "https://getsnapdrop.in/react-editor/api";
@@ -130,9 +131,12 @@ function useBackendSync({ state, dispatch }) {
       /** Mark as saved immediately to prevent duplicate POSTs from rapid tree changes */
       savedIdsRef.current.add(component.id);
 
+      /** Compress base64 images to reduce payload size and avoid 413 errors */
+      var compressed = await compressNodeImages(component);
+
       const data = await apiFetch("/component", {
         method: "POST",
-        body: JSON.stringify({ component }),
+        body: JSON.stringify({ component: compressed }),
       });
 
       if (data) {
@@ -161,9 +165,12 @@ function useBackendSync({ state, dispatch }) {
     try {
       if (!componentId) return;
 
+      /** Compress base64 images to reduce payload size and avoid 413 errors */
+      var compressed = await compressNodeImages(componentData);
+
       await apiFetch(`/component/${encodeURIComponent(componentId)}`, {
         method: "PUT",
-        body: JSON.stringify({ component: componentData }),
+        body: JSON.stringify({ component: compressed }),
       });
     } catch (error) {
       logger.warn("useBackendSync", `updateComponent '${componentId}' failed`, error);
