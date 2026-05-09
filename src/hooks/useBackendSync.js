@@ -66,9 +66,21 @@ function useBackendSync({ state, dispatch }) {
         const data = await apiFetch("/canvas");
         if (!data?.components?.length) return;
 
-        const validComponents = data.components.filter(
-          (component) => component?.id && component?.type
-        );
+        /**
+         * Normalize components — backend may return them directly or wrapped
+         * in a { component: {...} } envelope. Extract and validate either format.
+         */
+        const validComponents = data.components
+          .map((entry) => {
+            try {
+              /** Unwrap if backend wraps in { component: {...} } envelope */
+              var comp = entry?.component || entry;
+              return comp?.id && comp?.type ? comp : null;
+            } catch (error) {
+              return null;
+            }
+          })
+          .filter(Boolean);
 
         if (!validComponents.length) return;
 
@@ -108,22 +120,34 @@ function useBackendSync({ state, dispatch }) {
 
   /**
    * Saves a new component to the backend via POST.
+   * Tracks the component's own ID in savedIdsRef to prevent duplicate saves.
    * @param {Object} component - The component tree node to save
    */
   const saveComponent = useCallback(async (component) => {
     try {
       if (!component?.id) return;
 
+      /** Mark as saved immediately to prevent duplicate POSTs from rapid tree changes */
+      savedIdsRef.current.add(component.id);
+
       const data = await apiFetch("/component", {
         method: "POST",
         body: JSON.stringify({ component }),
       });
 
-      if (data?.id) {
-        savedIdsRef.current.add(data.id);
-        logger.info("useBackendSync", `Component '${data.id}' saved`);
+      if (data) {
+        /** Also track backend-generated ID if it differs from the component's own ID */
+        if (data?.id && data.id !== component.id) {
+          savedIdsRef.current.add(data.id);
+        }
+        logger.info("useBackendSync", "Component '" + component.id + "' saved");
+      } else {
+        /** POST failed — remove from tracked IDs so it retries on next tree change */
+        savedIdsRef.current.delete(component.id);
+        logger.warn("useBackendSync", "Component '" + component.id + "' save failed — will retry");
       }
     } catch (error) {
+      savedIdsRef.current.delete(component?.id);
       logger.warn("useBackendSync", "saveComponent failed", error);
     }
   }, []);
