@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import logger from "../utils/logger";
 
-const WS_URL = process.env.REACT_APP_WS_URL || "ws://localhost:3001";
+const WS_URL = process.env.REACT_APP_WS_URL || "ws://194.195.119.159/react-editor";
 const THROTTLE_MS = 50;
 
 /**
