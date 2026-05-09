@@ -3,7 +3,7 @@ import { SET_COMPONENT_TREE } from "../context/editorActions";
 import { AUTO_SAVE_DEBOUNCE_MS } from "../constants/editor";
 import logger from "../utils/logger";
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || "http://194.195.119.159/react-editor/api";
+const API_BASE_URL = process.env.REACT_APP_API_URL || "http://getsnapdrop.in/react-editor/api";
 
 /**
  * Performs a fetch request to the backend API with error handling.
